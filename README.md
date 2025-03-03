@@ -23,6 +23,8 @@ Each plugin (dynamic library) may implement one or more plugin interfaces for th
 1. `UserGetterPlugin` - interface for plugins that retrieve a UserID from the HTTP request. The plugin should implement the `GetUserID` method as defined by the `UserGetter` protocol.
    `GetUserID` receives an `*http.Request` and should return a sender's UserID in `*int64` or an `error`. An `error` should be returned only in cases of issues like network problems. If the user is not found or the request lacks the required data, return `nil` for the UserID.
 
+2. `UserIDValidatorPlugin` - interface for plugins that verify that the user is able to call the API for the AppID. The plugin should implement the `ValidateUserID` method which must satisfy the `UserIDValidator` protocol.
+
 2. `AppKeyGetterPlugin` - interface for plugins that retrieve an Application API Key from the HTTP request. The plugin should implement the `GetAppKey` method as defined by the `AppKeyGetter` protocol.
    `GetAppKey` receives an `*http.Request` and should return an Application API key used for the request.
 
@@ -35,10 +37,17 @@ Each plugin (dynamic library) may implement one or more plugin interfaces for th
 The implemented plugin structures should be assigned to the correspondent global variables:
 
 * `UserGetterPlugin` to the `UserIDGetter`
+* `UserIDValidatorPlugin` to the `UserIDValidator`
 * `AppKeyGetterPlugin` to the `AppKeyGetter`
 * `AppKeyValidationPlugin` to the `AppKeyGetter`
 
 For implementation example see [`_example/plugin.go`](_example/plugin.go)
+
+### How to make a stateful Plugin
+
+In some cases, it may be useful to have some state in the plugin. For example, for caching purposes or to load some configuration and keep it during the lifecycle. To achieve this, you can implement an `Initializable` interface for your plugin with a single method `Init() error` which is called once after the plugin is loaded.
+
+> **Attention**: if the Init method returns an error, the application will be terminated.
 
 ### How to build a Plugin
 
