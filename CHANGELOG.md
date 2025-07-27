@@ -20,7 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `UserGetterPlugin`
 - `UserValidationPlugin`
-- `AppKety`
+- `AppKeyGetterPlugin`
+- `AppKeyValidationPlugin`
 
 ## 0.0.2 - 2025-03-04
 
